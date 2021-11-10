@@ -23,20 +23,32 @@ Behavior >> hasInheritedProperty: aKey [
 
 { #category : #'*ActivePragma' }
 Behavior >> hasInheritedPropertyWithPrefix: aKey [
-"Could be more efficient if we start looking from the class for any property that start with the prefix and return true as soon as we find one"
 
-	^ (self inheritedPropertyWithPrefix: aKey) isNotEmpty
+	"Lazy implementation 
+
+	^ (self inheritedPropertyWithPrefix: aKey) isNotNil"
+
+	self properties ifNotNil: [ 
+		(self properties keys anySatisfy: [ :each | 
+			 each includesSubstring: aKey at: 1 ]) ifTrue: [ ^ true ] ].
+	self superclass
+		ifNil: [ ^ false ]
+		ifNotNil: [ ^ self superclass hasInheritedPropertyWithPrefix: aKey ]
 ]
 
 { #category : #'*ActivePragma' }
 Behavior >> inheritedProperties [
-|allProperties|
-	
-	self superclass ifNil: [ ^self properties ifNil: [^ Dictionary new]].
-	allProperties := self superclass inheritedProperties copy.
-	self properties ifNotNil:  [ self properties  keysAndValuesDo: [:k :v | allProperties at: k put: v].].
 
-	^ allProperties 
+	| allProperties |
+	self superclass ifNil: [ ^ self properties ].
+	allProperties := self superclass inheritedProperties copy.
+	self properties ifNotNil: [ 
+		allProperties := allProperties ifNil: [ 
+			                 Dictionary new ].
+		self properties keysAndValuesDo: [ :k :v | 
+			allProperties at: k put: v ] ].
+
+	^ allProperties
 ]
 
 { #category : #'*ActivePragma' }
@@ -63,6 +75,8 @@ Behavior >> inheritedPropertyAt: propName ifAbsent: aBlock [
 { #category : #'*ActivePragma' }
 Behavior >> inheritedPropertyWithPrefix: aPrefix [
 
+	self inheritedProperties ifNil: [ ^nil ].
+	
 	^ self inheritedProperties associationsSelect: [ :association | 
 		association key includesSubstring: aPrefix at: 1 ].
 ]
