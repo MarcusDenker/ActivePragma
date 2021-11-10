@@ -52,6 +52,15 @@ Behavior >> inheritedProperties [
 ]
 
 { #category : #'*ActivePragma' }
+Behavior >> inheritedPropertiesWithPrefix: aPrefix [
+
+	self inheritedProperties ifNil: [ ^nil ].
+	
+	^ self inheritedProperties associationsSelect: [ :association | 
+		association key includesSubstring: aPrefix at: 1 ].
+]
+
+{ #category : #'*ActivePragma' }
 Behavior >> inheritedPropertyAt: aKey [
 
 	^ self propertyAt: aKey ifAbsent: [ 
@@ -70,13 +79,4 @@ Behavior >> inheritedPropertyAt: propName ifAbsent: aBlock [
 	^ inheritedProperty
 		  ifNotNil: [ ^ inheritedProperty ]
 		  ifNil: [ ^ aBlock value ]
-]
-
-{ #category : #'*ActivePragma' }
-Behavior >> inheritedPropertyWithPrefix: aPrefix [
-
-	self inheritedProperties ifNil: [ ^nil ].
-	
-	^ self inheritedProperties associationsSelect: [ :association | 
-		association key includesSubstring: aPrefix at: 1 ].
 ]

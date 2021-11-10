@@ -92,7 +92,7 @@ BehaviorTest >> testInheritedPropertyWithPrefix [
 
 	self
 		assert:
-		(self classToBeTested inheritedPropertyWithPrefix: #testPrefix)
+		(self classToBeTested inheritedPropertiesWithPrefix: #testPrefix)
 		equals: (Dictionary newFrom: { 
 					 (#testPrefixKeySelector -> testValue).
 					 (#testPrefixSecondKeySelector -> 3) }).
