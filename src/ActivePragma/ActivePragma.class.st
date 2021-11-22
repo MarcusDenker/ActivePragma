@@ -8,6 +8,9 @@ ActivePragmas are subclasses that override
 Class {
 	#name : #ActivePragma,
 	#superclass : #Pragma,
+	#classVars : [
+		'MethodsCache'
+	],
 	#category : #'ActivePragma-Core'
 }
 
