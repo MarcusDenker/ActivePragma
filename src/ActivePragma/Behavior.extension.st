@@ -10,8 +10,9 @@ Behavior >> compiler [
 		            environment: self environment;
 		            class: self.
 
-	(self hasInheritedProperty: #CompilerPlugin) ifTrue: [ 
-		compiler addPlugin: (self propertyAt: #CompilerPlugin) ].
+	(self hasInheritedPropertyWithPrefix: #CompilerPlugin) ifTrue: [
+		(self inheritedPropertiesWithPrefix: #CompilerPlugin) valuesDo: 
+		[:plugin | compiler addPlugin: plugin] ].
 	^ compiler
 ]
 
