@@ -31,7 +31,7 @@ Behavior >> hasInheritedPropertyWithPrefix: aKey [
 
 	self properties ifNotNil: [ 
 		(self properties keys anySatisfy: [ :each | 
-			 each includesSubstring: aKey at: 1 ]) ifTrue: [ ^ true ] ].
+			 each beginsWith: aKey]) ifTrue: [ ^ true ] ].
 	self superclass
 		ifNil: [ ^ false ]
 		ifNotNil: [ ^ self superclass hasInheritedPropertyWithPrefix: aKey ]
@@ -58,7 +58,7 @@ Behavior >> inheritedPropertiesWithPrefix: aPrefix [
 	self inheritedProperties ifNil: [ ^nil ].
 	
 	^ self inheritedProperties associationsSelect: [ :association | 
-		association key includesSubstring: aPrefix at: 1 ].
+		association key beginsWith: aPrefix].
 ]
 
 { #category : #'*ActivePragma' }

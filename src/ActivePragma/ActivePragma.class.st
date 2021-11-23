@@ -88,7 +88,7 @@ ActivePragma >> isActivePragma [
 
 { #category : #events }
 ActivePragma >> onCompilation: aClass [
-	"this method is called whenever a method using the active pragma is compiled"
+	" TO Be removed after OCASTTranslator>>#visitPragmaNode: reverted and onCompilation hook removed"
 ]
 
 { #category : #events }
@@ -110,6 +110,10 @@ ActivePragma >> onLastRemovalFromClass: aClass [
 	"this method is called whenever the last method using the active pragma is removed from a class"
 
 
+]
+
+{ #category : #events }
+ActivePragma >> onParse: aCompilationContext [
 ]
 
 { #category : #events }

@@ -9,19 +9,8 @@ ActivePragmaTest >> tearDown [
 	super tearDown.
 	MyClass methodDictionary do: [ :each | MyClass removeSelector: each selector ].
 	MyClass properties ifNotNil: [MyClass properties removeAll].
-	(ActivePragma MethodsCache at: Pragma42 selector) removeAll  
+	ActivePragma MethodsCache at: Pragma42 selector ifPresent: [ : pr | pr removeAll]
 	"Put here a common initialization logic for tests"
-]
-
-{ #category : #tests }
-ActivePragmaTest >> testOnCompilation [
-
-|compiledMethod|
-
-	compiledMethod := MyClass compiler compile:'testingPragma42
-		<TestPragma42>
-		^42'.
-	self assert: (compiledMethod sourceCode includesSubstring: 'meaning of life').
 ]
 
 { #category : #tests }
@@ -31,11 +20,12 @@ ActivePragmaTest >> testOnFirstInstallation [
 
 	self deny: (MyClass hasProperty: #CompilerPlugin42).
 
-	compiledMethod := MyClass compile:'testingPragma42
+	MyClass compile:'testingPragma42
 		<TestPragma42>		
 		^42.'.
+	compiledMethod := MyClass>>#testingPragma42.
 	self assert: (MyClass hasProperty: #CompilerPlugin42).
-	self assert: (compiledMethod sourceCode includesSubstring: 'meaning of life').
+	self assert: compiledMethod literals first equals: 'meaning of life'.
 	
 "Check that the property is only added on the first addition of the pragma"
 	MyClass removeProperty: #CompilerPlugin42.
@@ -82,6 +72,18 @@ ActivePragmaTest >> testOnLastRemovalFromClass [
 	MyClass removeSelector: #testingPragma42.
 	self deny: (MyClass hasProperty: #CompilerPlugin42)
 	
+]
+
+{ #category : #tests }
+ActivePragmaTest >> testOnParse [
+
+	|compiledMethod|
+
+	compiledMethod := MyClass compiler compile:'testingPragma42
+		<TestPragma42>
+		^42'.
+	"as the method is not installed as has no source pointer, it decompiles on #sourceCode"
+	self assert: (compiledMethod sourceCode includesSubstring: 'meaning of life').
 ]
 
 { #category : #tests }
