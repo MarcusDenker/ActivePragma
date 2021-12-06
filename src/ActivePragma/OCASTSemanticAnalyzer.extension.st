@@ -7,7 +7,7 @@ OCASTSemanticAnalyzer >> visitPragmaNode: aPragmaNode [
 	super visitPragmaNode: aPragmaNode.
 	pragma := aPragmaNode asPragma.
 	
-	pragma isActivePragma ifTrue: [ pragma onParse: aPragmaNode methodNode compilationContext].
+	pragma isActivePragma ifTrue: [ pragma onCompilation: aPragmaNode methodNode compilationContext].
 	
 	
 	aPragmaNode selector = #compilerOptions: ifTrue: [ 

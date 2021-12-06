@@ -9,7 +9,7 @@ ActivePragmaTest >> tearDown [
 	super tearDown.
 	MyClass methodDictionary do: [ :each | MyClass removeSelector: each selector ].
 	MyClass properties ifNotNil: [MyClass properties removeAll].
-	ActivePragma MethodsCache at: Pragma42 selector ifPresent: [ : pr | pr removeAll]
+	(ActivePragma classVarNamed: #MethodsCache) at: Pragma42 selector ifPresent: [ : pr | pr removeAll]
 	"Put here a common initialization logic for tests"
 ]
 
@@ -53,6 +53,8 @@ ActivePragmaTest >> testOnInstallation [
 	compiledMethod := MyClass compile:'testingPragma42bis
 		<TestPragma42>'.
 	self assert: (MyClass propertyAt: #ClassInstallationCounter) equals: 2.
+	
+	self assert: ((ActivePragma classVarNamed: #MethodsCache) at: #TestPragma42) size equals: 2.
 		
 	MyClass removeSelector: #testingPragma42.
 	MyClass removeSelector: #testingPragma42bis

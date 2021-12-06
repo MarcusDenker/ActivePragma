@@ -14,12 +14,6 @@ Class {
 	#category : #'ActivePragma-Core'
 }
 
-{ #category : #accessing }
-ActivePragma class >> MethodsCache [
-	^ MethodsCache
-
-]
-
 { #category : #initialization }
 ActivePragma class >> initialize [
 
@@ -40,36 +34,48 @@ ActivePragma class >> initialize [
 
 { #category : #triggering }
 ActivePragma class >> methodAdded: aMethodAdded [
-
+	
 	aMethodAdded method pragmas
 		select: [ :each | each isActivePragma ]
 		thenDo: [ :each |
-			(MethodsCache at: each selector ifAbsentPut: [ IdentitySet new ]) 
+			(MethodsCache at: each selector ifAbsentPut: [ Set new ]) 
 				ifEmpty: [ each onFirstInstallationInClass: aMethodAdded classAffected ].
 			each onInstallation: aMethodAdded classAffected.
-			(MethodsCache at: each selector) add: aMethodAdded method ]
+			(MethodsCache at: each selector) add: aMethodAdded method asMethodReference]
 ]
 
 { #category : #triggering }
 ActivePragma class >> methodChanged: aMethodChanged [ 
-	aMethodChanged oldMethod pragmas
-		select: [:each | each isActivePragma ] 
-		thenDo: [:each | (MethodsCache at: each selector) remove: aMethodChanged oldMethod ].
-	aMethodChanged method pragmas 
-		select:  [ :each | each isActivePragma ]
-		thenDo: [ :each | 
+	| newPragmas removedPragmas |
+
+	newPragmas := aMethodChanged method pragmas difference:  aMethodChanged oldMethod pragmas. 
+	removedPragmas := aMethodChanged oldMethod pragmas difference: aMethodChanged method pragmas.
+	
+	"copy from methodAdded, to be refactored."
+	newPragmas select: [ :each | each isActivePragma ]
+		thenDo: [ :each |
+			(MethodsCache at: each selector ifAbsentPut: [ Set new ]) 
+				ifEmpty: [ each onFirstInstallationInClass: aMethodChanged classAffected ].
 			each onInstallation: aMethodChanged classAffected.
-			(MethodsCache at: each selector ifAbsentPut: [ IdentitySet new ]) add: aMethodChanged method].
+			(MethodsCache at: each selector) add: aMethodChanged method asMethodReference].
+		
+	"copy from methodRemoved, to be refactored."	
+	removedPragmas select: [ :each | each isActivePragma ]
+		thenDo: [ :each | 
+			(MethodsCache at: each selector) remove: aMethodChanged method asMethodReference.
+			each onRemoval: aMethodChanged classAffected.
+			(MethodsCache at: each selector) ifEmpty: [ 
+				each onLastRemovalFromClass: aMethodChanged classAffected ] ]
 	
 ]
 
 { #category : #triggering }
 ActivePragma class >> methodRemoved: aMethodRemoved [
-
+	
 	aMethodRemoved method pragmas
 		select: [ :each | each isActivePragma ]
 		thenDo: [ :each | 
-			(MethodsCache at: each selector) remove: aMethodRemoved method.
+			(MethodsCache at: each selector) remove: aMethodRemoved method asMethodReference.
 			each onRemoval: aMethodRemoved classAffected.
 			(MethodsCache at: each selector) ifEmpty: [ 
 				each onLastRemovalFromClass: aMethodRemoved classAffected ] ]
@@ -87,8 +93,8 @@ ActivePragma >> isActivePragma [
 ]
 
 { #category : #events }
-ActivePragma >> onCompilation: aClass [
-	" TO Be removed after OCASTTranslator>>#visitPragmaNode: reverted and onCompilation hook removed"
+ActivePragma >> onCompilation: aCompilationContext [
+	"this hook is called by the semantic analysis phase of compilation"
 ]
 
 { #category : #events }
@@ -110,10 +116,6 @@ ActivePragma >> onLastRemovalFromClass: aClass [
 	"this method is called whenever the last method using the active pragma is removed from a class"
 
 
-]
-
-{ #category : #events }
-ActivePragma >> onParse: aCompilationContext [
 ]
 
 { #category : #events }
