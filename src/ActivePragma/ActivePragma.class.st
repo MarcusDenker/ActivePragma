@@ -34,14 +34,19 @@ ActivePragma class >> initialize [
 
 { #category : #triggering }
 ActivePragma class >> methodAdded: aMethodAdded [
-	
+
+	|methodCacheForClass|
 	aMethodAdded method pragmas
 		select: [ :each | each isActivePragma ]
-		thenDo: [ :each |
-			(MethodsCache at: each selector ifAbsentPut: [ Set new ]) 
-				ifEmpty: [ each onFirstInstallationInClass: aMethodAdded classAffected ].
+		thenDo: [ :each | 
+			methodCacheForClass := (MethodsCache at: each selector ifAbsentPut: [ Set new ]).
+			methodCacheForClass := methodCacheForClass select: [ :methodEntry | 
+				 methodEntry nameOfClass = aMethodAdded methodClass name ].
+			methodCacheForClass ifEmpty: [ 
+				each onFirstInstallationInClass: aMethodAdded classAffected ].
 			each onInstallation: aMethodAdded classAffected.
-			(MethodsCache at: each selector) add: aMethodAdded method asMethodReference]
+			(MethodsCache at: each selector) add:
+				aMethodAdded method asMethodReference ]
 ]
 
 { #category : #triggering }
@@ -71,13 +76,14 @@ ActivePragma class >> methodChanged: aMethodChanged [
 
 { #category : #triggering }
 ActivePragma class >> methodRemoved: aMethodRemoved [
-	
+
 	aMethodRemoved method pragmas
 		select: [ :each | each isActivePragma ]
 		thenDo: [ :each | 
-			(MethodsCache at: each selector) remove: aMethodRemoved method asMethodReference.
+			(MethodsCache at: each selector) remove:
+				aMethodRemoved method asMethodReference.
 			each onRemoval: aMethodRemoved classAffected.
-			(MethodsCache at: each selector) ifEmpty: [ 
+			((MethodsCache at: each selector) select: [:methodEntry | methodEntry nameOfClass = aMethodRemoved methodClass name. ]) ifEmpty: [ 
 				each onLastRemovalFromClass: aMethodRemoved classAffected ] ]
 ]
 
