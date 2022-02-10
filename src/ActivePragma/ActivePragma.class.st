@@ -32,20 +32,25 @@ ActivePragma class >> initialize [
 	MethodsCache := IdentityDictionary new
 ]
 
+{ #category : #initialization }
+ActivePragma class >> isPragma: aPragma inClass: aClass [
+	|methodsCacheForPragma|
+	
+	methodsCacheForPragma := (MethodsCache at: aPragma selector ifAbsent: [ ^ false ]).
+	^ (methodsCacheForPragma select: [:each | each nameOfClass = aClass name]) isNotEmpty
+]
+
 { #category : #triggering }
 ActivePragma class >> methodAdded: aMethodAdded [
 
 	|methodCacheForClass|
 	aMethodAdded method pragmas
 		select: [ :each | each isActivePragma ]
-		thenDo: [ :each | 
-			methodCacheForClass := (MethodsCache at: each selector ifAbsentPut: [ Set new ]).
-			methodCacheForClass := methodCacheForClass select: [ :methodEntry | 
-				 methodEntry nameOfClass = aMethodAdded methodClass name ].
-			methodCacheForClass ifEmpty: [ 
-				each onFirstInstallationInClass: aMethodAdded classAffected ].
+		thenDo: [ :each |
+			(self isPragma: each inClass: aMethodAdded classAffected)
+			ifFalse: [each onFirstInstallationInClass: aMethodAdded classAffected].
 			each onInstallation: aMethodAdded classAffected.
-			(MethodsCache at: each selector) add:
+			(MethodsCache at: each selector ifAbsentPut: [Set new]) add:
 				aMethodAdded method asMethodReference ]
 ]
 
@@ -59,10 +64,10 @@ ActivePragma class >> methodChanged: aMethodChanged [
 	"copy from methodAdded, to be refactored."
 	newPragmas select: [ :each | each isActivePragma ]
 		thenDo: [ :each |
-			(MethodsCache at: each selector ifAbsentPut: [ Set new ]) 
-				ifEmpty: [ each onFirstInstallationInClass: aMethodChanged classAffected ].
+			  (self isPragma: each inClass: aMethodChanged classAffected )
+				ifFalse: [ each onFirstInstallationInClass: aMethodChanged classAffected ].
 			each onInstallation: aMethodChanged classAffected.
-			(MethodsCache at: each selector) add: aMethodChanged method asMethodReference].
+			(MethodsCache at: each selector ifAbsentPut: [Set new]) add: aMethodChanged method asMethodReference].
 		
 	"copy from methodRemoved, to be refactored."	
 	removedPragmas select: [ :each | each isActivePragma ]
