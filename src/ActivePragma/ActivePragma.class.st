@@ -20,19 +20,14 @@ Class {
 { #category : #initialization }
 ActivePragma class >> initialize [
 
-	SystemAnnouncer uniqueInstance weak
-		when: MethodModified
-		send: #methodChanged:
-		to: self.
-	SystemAnnouncer uniqueInstance weak
-		when: MethodRemoved
-		send: #methodRemoved:
-		to: self.
-	SystemAnnouncer uniqueInstance weak
-		when: MethodAdded
-		send: #methodAdded:
-		to: self.
+	self subscribeToEvents.
 	MethodsCache := IdentityDictionary new
+]
+
+{ #category : #accessing }
+ActivePragma class >> isEnabled [
+
+	^ enabled 
 ]
 
 { #category : #initialization }
@@ -99,6 +94,31 @@ ActivePragma class >> methodRemoved: aMethodRemoved [
 ActivePragma class >> selector [
 	^ #ActivePragma
 
+]
+
+{ #category : #initialization }
+ActivePragma class >> subscribeToEvents [
+
+	SystemAnnouncer uniqueInstance weak
+		when: MethodModified
+		send: #methodChanged:
+		to: self.
+	SystemAnnouncer uniqueInstance weak
+		when: MethodRemoved
+		send: #methodRemoved:
+		to: self.
+	SystemAnnouncer uniqueInstance weak
+		when: MethodAdded
+		send: #methodAdded:
+		to: self.
+
+]
+
+{ #category : #initialization }
+ActivePragma class >> unsubscribeToEvents [
+
+	enabled := false.
+	SystemAnnouncer uniqueInstance  unsubscribe: self
 ]
 
 { #category : #testing }
