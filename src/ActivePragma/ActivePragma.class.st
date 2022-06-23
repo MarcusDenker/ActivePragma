@@ -11,6 +11,9 @@ Class {
 	#classVars : [
 		'MethodsCache'
 	],
+	#classInstVars : [
+		'enabled'
+	],
 	#category : #'ActivePragma-Core'
 }
 
@@ -100,7 +103,7 @@ ActivePragma class >> selector [
 
 { #category : #testing }
 ActivePragma >> isActivePragma [
-	^true
+	^ self class isEnabled
 ]
 
 { #category : #events }
