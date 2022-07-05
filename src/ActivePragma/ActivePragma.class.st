@@ -27,7 +27,7 @@ ActivePragma class >> initialize [
 { #category : #accessing }
 ActivePragma class >> isEnabled [
 
-	^ enabled 
+	^ enabled ifNil: [^ false ]
 ]
 
 { #category : #initialization }
