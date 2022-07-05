@@ -84,7 +84,7 @@ ActivePragma class >> methodRemoved: aMethodRemoved [
 		select: [ :each | each isActivePragma ]
 		thenDo: [ :each | 
 			(MethodsCache at: each selector) remove:
-				aMethodRemoved method asMethodReference.
+				aMethodRemoved method asMethodReference ifAbsent: [].
 			each onRemoval: aMethodRemoved classAffected.
 			((MethodsCache at: each selector) select: [:methodEntry | methodEntry nameOfClass = aMethodRemoved methodClass name. ]) ifEmpty: [ 
 				each onLastRemovalFromClass: aMethodRemoved classAffected ] ]
@@ -98,7 +98,7 @@ ActivePragma class >> selector [
 
 { #category : #initialization }
 ActivePragma class >> subscribeToEvents [
-
+	enabled := true.
 	SystemAnnouncer uniqueInstance weak
 		when: MethodModified
 		send: #methodChanged:
