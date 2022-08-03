@@ -90,6 +90,11 @@ ActivePragma class >> methodRemoved: aMethodRemoved [
 				each onLastRemovalFromClass: aMethodRemoved classAffected ] ]
 ]
 
+{ #category : #triggering }
+ActivePragma class >> methodsCache [
+	^ MethodsCache
+]
+
 { #category : #accessing }
 ActivePragma class >> selector [
 	^ #ActivePragma
