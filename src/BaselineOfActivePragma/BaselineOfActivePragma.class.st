@@ -12,5 +12,5 @@ BaselineOfActivePragma >> baseline: spec [
 	spec
 			package: 'ActivePragmaLoading';
 			package: 'ActivePragma'
-			with: [ spec requires: #( 'ProtectedPharoLoading' ) ]
+			with: [ spec requires: #( 'ActivePragmaLoading' ) ]
 ]
