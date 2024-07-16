@@ -5,12 +5,20 @@ Class {
 }
 
 { #category : #running }
+ActivePragmaTest >> setUp [
+
+	Pragma42 subscribeToEvents.
+	^ super setUp
+]
+
+{ #category : #running }
 ActivePragmaTest >> tearDown [ 
 	super tearDown.
 	MyClass methodDictionary do: [ :each | MyClass removeSelector: each selector ].
 	MyClass properties ifNotNil: [MyClass properties removeAll].
-	(ActivePragma classVarNamed: #MethodsCache) at: Pragma42 selector ifPresent: [ : pr | pr removeAll]
+	(ActivePragma classVarNamed: #MethodsCache) at: Pragma42 selector ifPresent: [ : pr | pr removeAll].
 	"Put here a common initialization logic for tests"
+	Pragma42 unsubscribeToEvents.
 ]
 
 { #category : #tests }
