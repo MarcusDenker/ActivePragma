@@ -1,17 +1,19 @@
 Class {
-	#name : #ActivePragmaTest,
-	#superclass : #TestCase,
-	#category : #'ActivePragma-Tests'
+	#name : 'ActivePragmaTest',
+	#superclass : 'TestCase',
+	#category : 'ActivePragma-Tests',
+	#package : 'ActivePragma',
+	#tag : 'Tests'
 }
 
-{ #category : #running }
+{ #category : 'running' }
 ActivePragmaTest >> setUp [
 
 	Pragma42 subscribeToEvents.
 	^ super setUp
 ]
 
-{ #category : #running }
+{ #category : 'running' }
 ActivePragmaTest >> tearDown [ 
 	super tearDown.
 	MyClass methodDictionary do: [ :each | MyClass removeSelector: each selector ].
@@ -21,7 +23,7 @@ ActivePragmaTest >> tearDown [
 	Pragma42 unsubscribeToEvents.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 ActivePragmaTest >> testOnFirstInstallation [
 
 |compiledMethod|
@@ -45,7 +47,7 @@ ActivePragmaTest >> testOnFirstInstallation [
 	MyClass removeSelector: #testingPragma42bis
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 ActivePragmaTest >> testOnInstallation [
 
 |compiledMethod|
@@ -68,7 +70,7 @@ ActivePragmaTest >> testOnInstallation [
 	MyClass removeSelector: #testingPragma42bis
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 ActivePragmaTest >> testOnLastRemovalFromClass [
 
 |compiledMethod|
@@ -84,7 +86,7 @@ ActivePragmaTest >> testOnLastRemovalFromClass [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 ActivePragmaTest >> testOnParse [
 
 	|compiledMethod|
@@ -92,11 +94,11 @@ ActivePragmaTest >> testOnParse [
 	compiledMethod := MyClass compiler compile:'testingPragma42
 		<TestPragma42>
 		^42'.
-	"as the method is not installed as has no source pointer, it decompiles on #sourceCode"
-	self assert: (compiledMethod sourceCode includesSubstring: 'meaning of life').
+	
+	self assert: (compiledMethod literals first) equals: 'meaning of life'.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 ActivePragmaTest >> testOnRemoval [
 
 |compiledMethod|

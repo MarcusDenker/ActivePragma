@@ -1,6 +1,6 @@
-Extension { #name : #CompiledMethod }
+Extension { #name : 'CompiledMethod' }
 
-{ #category : #'*ActivePragma' }
+{ #category : '*ActivePragma' }
 CompiledMethod >> asMethodReference [
 	^ MethodReference method: self.
 ]

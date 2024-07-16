@@ -1,6 +1,6 @@
-Extension { #name : #AdditionalMethodState }
+Extension { #name : 'AdditionalMethodState' }
 
-{ #category : #'*ActivePragma' }
+{ #category : '*ActivePragma' }
 AdditionalMethodState >> copyWith: aPropertyOrPragma [ "<Association|Pragma>"
 	"Answer a copy of the receiver which includes aPropertyOrPragma"
 	| bs copy |

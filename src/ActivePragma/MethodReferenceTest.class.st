@@ -1,17 +1,19 @@
 Class {
-	#name : #MethodReferenceTest,
-	#superclass : #TestCase,
-	#category : #'ActivePragma-Tests'
+	#name : 'MethodReferenceTest',
+	#superclass : 'TestCase',
+	#category : 'ActivePragma-Tests',
+	#package : 'ActivePragma',
+	#tag : 'Tests'
 }
 
-{ #category : #tests }
+{ #category : 'tests' }
 MethodReferenceTest >> testCreationViaMethod [
 	| ref |
 	ref := (Object>>#halt) asMethodReference.
 	self assert: ref getClass equals: Object>>#halt.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MethodReferenceTest >> testGetClass [
 	| ref |
 	ref := MethodReference method: Object>>#halt.

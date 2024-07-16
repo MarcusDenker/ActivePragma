@@ -1,16 +1,18 @@
 Class {
-	#name : #Pragma42,
-	#superclass : #ActivePragma,
-	#category : #'ActivePragma-Tests'
+	#name : 'Pragma42',
+	#superclass : 'ActivePragma',
+	#category : 'ActivePragma-Tests',
+	#package : 'ActivePragma',
+	#tag : 'Tests'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 Pragma42 class >> selector [
 
 	^ #TestPragma42
 ]
 
-{ #category : #events }
+{ #category : 'events' }
 Pragma42 >> onCompilation: aCompilationContext [
 	"here just add the plugin"
 	
@@ -18,7 +20,7 @@ Pragma42 >> onCompilation: aCompilationContext [
 			aCompilationContext addASTTransformationPlugin: ASTPluginMeaningOfLife ]
 ]
 
-{ #category : #events }
+{ #category : 'events' }
 Pragma42 >> onFirstInstallationInClass: aClass [
 	"set property on the class, all methods in that class now use this plugin"
 	aClass propertyAt: #CompilerPlugin42 put: ASTPluginMeaningOfLife.
@@ -26,7 +28,7 @@ Pragma42 >> onFirstInstallationInClass: aClass [
 	
 ]
 
-{ #category : #events }
+{ #category : 'events' }
 Pragma42 >> onInstallation: aClass [
 	"set property on the class, all methods in that class now use this plugin"
 	|propertyValue|
@@ -38,7 +40,7 @@ Pragma42 >> onInstallation: aClass [
 	
 ]
 
-{ #category : #events }
+{ #category : 'events' }
 Pragma42 >> onLastRemovalFromClass:aClass [ 
 	aClass removeProperty: #CompilerPlugin42.
 	aClass removeProperty: #ClassInstallationCounter.
@@ -46,7 +48,7 @@ Pragma42 >> onLastRemovalFromClass:aClass [
 
 ]
 
-{ #category : #events }
+{ #category : 'events' }
 Pragma42 >> onRemoval: aClass [
 
 	|propertyValue|

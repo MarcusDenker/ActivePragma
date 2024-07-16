@@ -1,6 +1,6 @@
-Extension { #name : #BehaviorTest }
+Extension { #name : 'BehaviorTest' }
 
-{ #category : #'*ActivePragma' }
+{ #category : '*ActivePragma' }
 BehaviorTest >> testHasInheritedProperty [
 	| testValue |
 	testValue := Date today.
@@ -13,7 +13,7 @@ BehaviorTest >> testHasInheritedProperty [
 	self deny: (self classToBeTested hasInheritedProperty: #testKeySelector)
 ]
 
-{ #category : #'*ActivePragma' }
+{ #category : '*ActivePragma' }
 BehaviorTest >> testHasInheritedPropertyWithPrefix [
 
 	| testValue |
@@ -32,7 +32,7 @@ BehaviorTest >> testHasInheritedPropertyWithPrefix [
 		(self classToBeTested hasInheritedProperty: #testKeySelector)
 ]
 
-{ #category : #'*ActivePragma' }
+{ #category : '*ActivePragma' }
 BehaviorTest >> testInheritedProperties [
 
 	| testValue |
@@ -63,7 +63,7 @@ BehaviorTest >> testInheritedProperties [
 	self deny: (self classToBeTested hasInheritedPropertyWithPrefix: #test).
 ]
 
-{ #category : #'*ActivePragma' }
+{ #category : '*ActivePragma' }
 BehaviorTest >> testInheritedPropertyAt [
 
 	| testValue |
@@ -79,7 +79,7 @@ BehaviorTest >> testInheritedPropertyAt [
 
 ]
 
-{ #category : #'*ActivePragma' }
+{ #category : '*ActivePragma' }
 BehaviorTest >> testInheritedPropertyWithPrefix [
 
 	| testValue |
