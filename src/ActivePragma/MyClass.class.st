@@ -1,5 +1,7 @@
 Class {
-	#name : #MyClass,
-	#superclass : #Object,
-	#category : #'ActivePragma-Tests'
+	#name : 'MyClass',
+	#superclass : 'Object',
+	#category : 'ActivePragma-Tests',
+	#package : 'ActivePragma',
+	#tag : 'Tests'
 }

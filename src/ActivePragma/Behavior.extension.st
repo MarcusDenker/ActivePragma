@@ -1,6 +1,6 @@
-Extension { #name : #Behavior }
+Extension { #name : 'Behavior' }
 
-{ #category : #'*ActivePragma' }
+{ #category : '*ActivePragma' }
 Behavior >> compiler [
 
 	"Answer a compiler appropriate for source methods of this class."
@@ -16,13 +16,13 @@ Behavior >> compiler [
 	^ compiler
 ]
 
-{ #category : #'*ActivePragma' }
+{ #category : '*ActivePragma' }
 Behavior >> hasInheritedProperty: aKey [
 
 	^ (self inheritedPropertyAt: aKey) isNotNil 
 ]
 
-{ #category : #'*ActivePragma' }
+{ #category : '*ActivePragma' }
 Behavior >> hasInheritedPropertyWithPrefix: aKey [
 
 	"Lazy implementation 
@@ -37,7 +37,7 @@ Behavior >> hasInheritedPropertyWithPrefix: aKey [
 		ifNotNil: [ ^ self superclass hasInheritedPropertyWithPrefix: aKey ]
 ]
 
-{ #category : #'*ActivePragma' }
+{ #category : '*ActivePragma' }
 Behavior >> inheritedProperties [
 
 	| allProperties |
@@ -52,7 +52,7 @@ Behavior >> inheritedProperties [
 	^ allProperties
 ]
 
-{ #category : #'*ActivePragma' }
+{ #category : '*ActivePragma' }
 Behavior >> inheritedPropertiesWithPrefix: aPrefix [
 
 	self inheritedProperties ifNil: [ ^nil ].
@@ -61,7 +61,7 @@ Behavior >> inheritedPropertiesWithPrefix: aPrefix [
 		association key beginsWith: aPrefix].
 ]
 
-{ #category : #'*ActivePragma' }
+{ #category : '*ActivePragma' }
 Behavior >> inheritedPropertyAt: aKey [
 
 	^ self propertyAt: aKey ifAbsent: [ 
@@ -70,7 +70,7 @@ Behavior >> inheritedPropertyAt: aKey [
 			  ifNotNil: [ self superclass inheritedPropertyAt: aKey ] ]
 ]
 
-{ #category : #'*ActivePragma' }
+{ #category : '*ActivePragma' }
 Behavior >> inheritedPropertyAt: propName ifAbsent: aBlock [
 
 	| inheritedProperty |

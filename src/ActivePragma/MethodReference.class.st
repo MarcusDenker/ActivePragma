@@ -1,14 +1,16 @@
 Class {
-	#name : #MethodReference,
-	#superclass : #Object,
+	#name : 'MethodReference',
+	#superclass : 'Object',
 	#instVars : [
 		'selector',
 		'nameOfClass'
 	],
-	#category : #'ActivePragma-Tests'
+	#category : 'ActivePragma-Tests',
+	#package : 'ActivePragma',
+	#tag : 'Tests'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MethodReference class >> method: aCompiledMethod [
 
 	^ self new
@@ -17,44 +19,44 @@ MethodReference class >> method: aCompiledMethod [
 		  yourself
 ]
 
-{ #category : #comparing }
+{ #category : 'comparing' }
 MethodReference >> = anObject [
 	^ anObject class == self class
 		and: [ anObject selector = selector
 				and: [ anObject nameOfClass = nameOfClass ]] 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MethodReference >> getClass [
 	^ (self class environment at: nameOfClass) >> selector
 ]
 
-{ #category : #comparing }
+{ #category : 'comparing' }
 MethodReference >> hash [
 	"Answer an integer value that is related to the identity of the receiver."
 
 	^ nameOfClass hash bitXor: selector hash
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MethodReference >> nameOfClass [
 
 	^ nameOfClass
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MethodReference >> nameOfClass: anObject [
 
 	nameOfClass := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MethodReference >> selector [
 
 	^ selector
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MethodReference >> selector: anObject [
 
 	selector := anObject

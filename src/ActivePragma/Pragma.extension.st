@@ -1,11 +1,11 @@
-Extension { #name : #Pragma }
+Extension { #name : 'Pragma' }
 
-{ #category : #'*ActivePragma' }
+{ #category : '*ActivePragma' }
 Pragma >> isActivePragma [
 	^false
 ]
 
-{ #category : #'*ActivePragma' }
+{ #category : '*ActivePragma' }
 Pragma class >> selector: aSymbol arguments: anArray [
 	| class | 
 	class := ActivePragma allSubclasses detect: [ :pragmaClass | pragmaClass selector = aSymbol ] ifNone: [ self ].

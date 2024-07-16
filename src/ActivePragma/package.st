@@ -1,1 +1,1 @@
-Package { #name : #ActivePragma }
+Package { #name : 'ActivePragma' }

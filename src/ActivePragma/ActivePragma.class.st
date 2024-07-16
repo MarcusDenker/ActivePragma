@@ -6,31 +6,33 @@ ActivePragmas are subclasses that override
 - onCompilation
 "
 Class {
-	#name : #ActivePragma,
-	#superclass : #Pragma,
+	#name : 'ActivePragma',
+	#superclass : 'Pragma',
 	#classVars : [
 		'MethodsCache'
 	],
 	#classInstVars : [
 		'enabled'
 	],
-	#category : #'ActivePragma-Core'
+	#category : 'ActivePragma-Core',
+	#package : 'ActivePragma',
+	#tag : 'Core'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ActivePragma class >> initialize [
 
 	self subscribeToEvents.
 	MethodsCache := IdentityDictionary new
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ActivePragma class >> isEnabled [
 
 	^ enabled ifNil: [^ false ]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ActivePragma class >> isPragma: aPragma inClass: aClass [
 	|methodsCacheForPragma|
 	
@@ -38,7 +40,7 @@ ActivePragma class >> isPragma: aPragma inClass: aClass [
 	^ (methodsCacheForPragma select: [:each | each nameOfClass = aClass name]) isNotEmpty
 ]
 
-{ #category : #triggering }
+{ #category : 'triggering' }
 ActivePragma class >> methodAdded: aMethodAdded [
 
 	|methodCacheForClass|
@@ -52,7 +54,7 @@ ActivePragma class >> methodAdded: aMethodAdded [
 				aMethodAdded method asMethodReference ]
 ]
 
-{ #category : #triggering }
+{ #category : 'triggering' }
 ActivePragma class >> methodChanged: aMethodChanged [ 
 	| newPragmas removedPragmas |
 
@@ -77,7 +79,7 @@ ActivePragma class >> methodChanged: aMethodChanged [
 	
 ]
 
-{ #category : #triggering }
+{ #category : 'triggering' }
 ActivePragma class >> methodRemoved: aMethodRemoved [
 
 	aMethodRemoved method pragmas
@@ -90,18 +92,18 @@ ActivePragma class >> methodRemoved: aMethodRemoved [
 				each onLastRemovalFromClass: aMethodRemoved classAffected ] ]
 ]
 
-{ #category : #triggering }
+{ #category : 'triggering' }
 ActivePragma class >> methodsCache [
 	^ MethodsCache
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ActivePragma class >> selector [
 	^ #ActivePragma
 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ActivePragma class >> subscribeToEvents [
 	enabled := true.
 	SystemAnnouncer uniqueInstance weak
@@ -119,24 +121,24 @@ ActivePragma class >> subscribeToEvents [
 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ActivePragma class >> unsubscribeToEvents [
 
 	enabled := false.
 	SystemAnnouncer uniqueInstance  unsubscribe: self
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 ActivePragma >> isActivePragma [
 	^ self class isEnabled
 ]
 
-{ #category : #events }
+{ #category : 'events' }
 ActivePragma >> onCompilation: aCompilationContext [
 	"this hook is called by the semantic analysis phase of compilation"
 ]
 
-{ #category : #events }
+{ #category : 'events' }
 ActivePragma >> onFirstInstallationInClass: aClass [
 
 	"this method is called whenever a method using the active pragma for the first time in a class is installed"
@@ -144,12 +146,12 @@ ActivePragma >> onFirstInstallationInClass: aClass [
 	
 ]
 
-{ #category : #events }
+{ #category : 'events' }
 ActivePragma >> onInstallation: aClass [
 	"this method is called whenever a method using the active pragma is installed in a class"
 ]
 
-{ #category : #events }
+{ #category : 'events' }
 ActivePragma >> onLastRemovalFromClass: aClass [
 
 	"this method is called whenever the last method using the active pragma is removed from a class"
@@ -157,7 +159,7 @@ ActivePragma >> onLastRemovalFromClass: aClass [
 
 ]
 
-{ #category : #events }
+{ #category : 'events' }
 ActivePragma >> onRemoval: aClass [
 
 	"this method is called whenever a method using the active pragma is removed from a class"
