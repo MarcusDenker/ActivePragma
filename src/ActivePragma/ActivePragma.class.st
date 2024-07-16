@@ -11,37 +11,45 @@ Class {
 	#classVars : [
 		'MethodsCache'
 	],
+	#classInstVars : [
+		'enabled'
+	],
 	#category : #'ActivePragma-Core'
 }
 
 { #category : #initialization }
 ActivePragma class >> initialize [
 
-	SystemAnnouncer uniqueInstance weak
-		when: MethodModified
-		send: #methodChanged:
-		to: self.
-	SystemAnnouncer uniqueInstance weak
-		when: MethodRemoved
-		send: #methodRemoved:
-		to: self.
-	SystemAnnouncer uniqueInstance weak
-		when: MethodAdded
-		send: #methodAdded:
-		to: self.
+	self subscribeToEvents.
 	MethodsCache := IdentityDictionary new
+]
+
+{ #category : #accessing }
+ActivePragma class >> isEnabled [
+
+	^ enabled ifNil: [^ false ]
+]
+
+{ #category : #initialization }
+ActivePragma class >> isPragma: aPragma inClass: aClass [
+	|methodsCacheForPragma|
+	
+	methodsCacheForPragma := (MethodsCache at: aPragma selector ifAbsent: [ ^ false ]).
+	^ (methodsCacheForPragma select: [:each | each nameOfClass = aClass name]) isNotEmpty
 ]
 
 { #category : #triggering }
 ActivePragma class >> methodAdded: aMethodAdded [
-	
+
+	|methodCacheForClass|
 	aMethodAdded method pragmas
 		select: [ :each | each isActivePragma ]
 		thenDo: [ :each |
-			(MethodsCache at: each selector ifAbsentPut: [ Set new ]) 
-				ifEmpty: [ each onFirstInstallationInClass: aMethodAdded classAffected ].
+			(self isPragma: each inClass: aMethodAdded classAffected)
+			ifFalse: [each onFirstInstallationInClass: aMethodAdded classAffected].
 			each onInstallation: aMethodAdded classAffected.
-			(MethodsCache at: each selector) add: aMethodAdded method asMethodReference]
+			(MethodsCache at: each selector ifAbsentPut: [Set new]) add:
+				aMethodAdded method asMethodReference ]
 ]
 
 { #category : #triggering }
@@ -54,10 +62,10 @@ ActivePragma class >> methodChanged: aMethodChanged [
 	"copy from methodAdded, to be refactored."
 	newPragmas select: [ :each | each isActivePragma ]
 		thenDo: [ :each |
-			(MethodsCache at: each selector ifAbsentPut: [ Set new ]) 
-				ifEmpty: [ each onFirstInstallationInClass: aMethodChanged classAffected ].
+			  (self isPragma: each inClass: aMethodChanged classAffected )
+				ifFalse: [ each onFirstInstallationInClass: aMethodChanged classAffected ].
 			each onInstallation: aMethodChanged classAffected.
-			(MethodsCache at: each selector) add: aMethodChanged method asMethodReference].
+			(MethodsCache at: each selector ifAbsentPut: [Set new]) add: aMethodChanged method asMethodReference].
 		
 	"copy from methodRemoved, to be refactored."	
 	removedPragmas select: [ :each | each isActivePragma ]
@@ -71,14 +79,20 @@ ActivePragma class >> methodChanged: aMethodChanged [
 
 { #category : #triggering }
 ActivePragma class >> methodRemoved: aMethodRemoved [
-	
+
 	aMethodRemoved method pragmas
 		select: [ :each | each isActivePragma ]
 		thenDo: [ :each | 
-			(MethodsCache at: each selector) remove: aMethodRemoved method asMethodReference.
+			(MethodsCache at: each selector) remove:
+				aMethodRemoved method asMethodReference ifAbsent: [].
 			each onRemoval: aMethodRemoved classAffected.
-			(MethodsCache at: each selector) ifEmpty: [ 
+			((MethodsCache at: each selector) select: [:methodEntry | methodEntry nameOfClass = aMethodRemoved methodClass name. ]) ifEmpty: [ 
 				each onLastRemovalFromClass: aMethodRemoved classAffected ] ]
+]
+
+{ #category : #triggering }
+ActivePragma class >> methodsCache [
+	^ MethodsCache
 ]
 
 { #category : #accessing }
@@ -87,9 +101,34 @@ ActivePragma class >> selector [
 
 ]
 
+{ #category : #initialization }
+ActivePragma class >> subscribeToEvents [
+	enabled := true.
+	SystemAnnouncer uniqueInstance weak
+		when: MethodModified
+		send: #methodChanged:
+		to: self.
+	SystemAnnouncer uniqueInstance weak
+		when: MethodRemoved
+		send: #methodRemoved:
+		to: self.
+	SystemAnnouncer uniqueInstance weak
+		when: MethodAdded
+		send: #methodAdded:
+		to: self.
+
+]
+
+{ #category : #initialization }
+ActivePragma class >> unsubscribeToEvents [
+
+	enabled := false.
+	SystemAnnouncer uniqueInstance  unsubscribe: self
+]
+
 { #category : #testing }
 ActivePragma >> isActivePragma [
-	^true
+	^ self class isEnabled
 ]
 
 { #category : #events }
